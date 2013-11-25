@@ -28,24 +28,23 @@ angular.module('ui.bootstrap.collapse', ['ui.bootstrap.transition'])
         function expand() {
           if (initialAnimSkip) {
             initialAnimSkip = false;
-            element.removeClass('collapsing');
-            element.addClass('collapse in');
-            element.css({height: 'auto'});
+            expandDone();
           } else {
             element.removeClass('collapse').addClass('collapsing');
-            doTransition({ height: element[0].scrollHeight + 'px' }).then(function () {
-              element.removeClass('collapsing');
-              element.addClass('collapse in');
-              element.css({height: 'auto'});
-            });
+            doTransition({ height: element[0].scrollHeight + 'px' }).then(expandDone);
           }
+        }
+
+        function expandDone() {
+          element.removeClass('collapsing');
+          element.addClass('collapse in');
+          element.css({height: 'auto'});
         }
 
         function collapse() {
           if (initialAnimSkip) {
             initialAnimSkip = false;
-            element.removeClass('collapsing');
-            element.addClass('collapse');
+            collapseDone();
             element.css({height: 0});
           } else {
             // CSS transitions don't work with height: auto, so we have to manually change the height to a specific value
@@ -55,11 +54,13 @@ angular.module('ui.bootstrap.collapse', ['ui.bootstrap.transition'])
 
             element.removeClass('collapse in').addClass('collapsing');
 
-            doTransition({ height: 0 }).then(function () {
-              element.removeClass('collapsing');
-              element.addClass('collapse');
-            });
+            doTransition({ height: 0 }).then(collapseDone);
           }
+        }
+
+        function collapseDone() {
+          element.removeClass('collapsing');
+          element.addClass('collapse');
         }
 
         scope.$watch(attrs.collapse, function (shouldCollapse) {
