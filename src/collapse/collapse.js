@@ -8,16 +8,21 @@ angular.module('ui.bootstrap.collapse', ['ui.bootstrap.transition'])
         var initialAnimSkip = true;
         var currentTransition;
 
-        function resetCurrentTransition() {
-          currentTransition = undefined;
-        }
-
         function doTransition(change) {
+          var newTransition = $transition(element, change);
           if (currentTransition) {
             currentTransition.cancel();
           }
-          (currentTransition = $transition(element, change)).then(resetCurrentTransition, resetCurrentTransition);
-          return currentTransition;
+          currentTransition = newTransition;
+          newTransition.then(newTransitionDone, newTransitionDone);
+          return newTransition;
+
+          function newTransitionDone() {
+            // Make sure it's this transition, otherwise, leave it alone.
+            if (currentTransition === newTransition) {
+              currentTransition = undefined;
+            }
+          }
         }
 
         function expand() {
