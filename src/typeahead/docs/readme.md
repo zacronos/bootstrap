@@ -1,5 +1,5 @@
 Typeahead is a AngularJS version of [Twitter Bootstrap typeahead plugin](http://twitter.github.com/bootstrap/javascript.html#typeahead).
-This directive can be used to quickly create elegant typeheads with any form text input.
+This directive can be used to quickly create elegant typeaheads with any form text input.
 
 It is very well integrated into the AngularJS as it uses subset of the
 [select directive](http://docs.angularjs.org/api/ng.directive:select) syntax, which is very flexible. Supported expressions:
@@ -40,6 +40,10 @@ The typeahead directives provide several attributes:
 * `typeahead-on-select` <i class="icon-eye-open"></i>
    _(Defaults: null)_ :
    A callback executed when a match is selected
+
+* `typeahead-open-on-click` <i class="icon-eye-open"></i>
+   _(Defaults: false)_ :
+   Should it open typeahead popup when use clicks in the element but doesn't start typing ?
 
 * `typeahead-template-url` <i class="icon-eye-open"></i>
    :

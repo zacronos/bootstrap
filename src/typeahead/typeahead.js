@@ -41,7 +41,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       //SUPPORTED ATTRIBUTES (OPTIONS)
 
       //minimal no of characters that needs to be entered before typeahead kicks-in
-      var minSearch = originalScope.$eval(attrs.typeaheadMinLength) || 1;
+      var minSearch = originalScope.$eval(attrs.typeaheadMinLength);
+      minSearch = minSearch === 0 ? minSearch : minSearch || 1;
 
       //minimal wait time after last character typed before typehead kicks-in
       var waitTime = originalScope.$eval(attrs.typeaheadWaitMs) || 0;
@@ -56,6 +57,8 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
       var onSelectCallback = $parse(attrs.typeaheadOnSelect);
 
       var inputFormatter = attrs.typeaheadInputFormatter ? $parse(attrs.typeaheadInputFormatter) : undefined;
+
+      var openOnClick = !!originalScope.$eval(attrs.typeaheadOpenOnClick);
 
       //INTERNAL VARIABLES
 
@@ -144,39 +147,49 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
       //plug into $parsers pipeline to open a typeahead on view changes initiated from DOM
       //$parsers kick-in on all the changes coming from the view as well as manually triggered by $setViewValue
-      modelCtrl.$parsers.unshift(function (inputValue) {
+      var initiateGetMatches = function (inputValue) {
 
-        hasFocus = true;
+          hasFocus = true;
 
-        if (inputValue && inputValue.length >= minSearch) {
-          if (waitTime > 0) {
-            if (timeoutPromise) {
-              $timeout.cancel(timeoutPromise);//cancel previous timeout
-            }
-            timeoutPromise = $timeout(function () {
-              getMatchesAsync(inputValue);
-            }, waitTime);
+          if (minSearch === 0 || inputValue && inputValue.length >= minSearch) {
+              if (waitTime > 0) {
+                  if (timeoutPromise) {
+                      $timeout.cancel(timeoutPromise);//cancel previous timeout
+                  }
+                  timeoutPromise = $timeout(function () {
+                      getMatchesAsync(inputValue);
+                  }, waitTime);
+              } else {
+                  getMatchesAsync(inputValue);
+              }
           } else {
-            getMatchesAsync(inputValue);
+              isLoadingSetter(originalScope, false);
+              resetMatches();
           }
-        } else {
-          isLoadingSetter(originalScope, false);
-          resetMatches();
-        }
 
-        if (isEditable) {
-          return inputValue;
-        } else {
-          if (!inputValue) {
-            // Reset in case user had typed something previously.
-            modelCtrl.$setValidity('editable', true);
-            return inputValue;
+          if (isEditable) {
+              return inputValue;
           } else {
-            modelCtrl.$setValidity('editable', false);
-            return undefined;
+              if (!inputValue) {
+                  // Reset in case user had typed something previously.
+                  modelCtrl.$setValidity('editable', true);
+                  return inputValue;
+              } else {
+                  modelCtrl.$setValidity('editable', false);
+                  return undefined;
+              }
           }
-        }
-      });
+      };
+      modelCtrl.$parsers.unshift(initiateGetMatches);
+
+      if (openOnClick === true) {
+        element.bind('click', function (evt) {
+          if (!hasFocus) {
+            initiateGetMatches(evt.target.value);
+            originalScope.$apply();
+          }
+        });
+      }
 
       modelCtrl.$formatters.push(function (modelValue) {
 
@@ -219,7 +232,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
         resetMatches();
 
-        //return focus to the input element if a mach was selected via a mouse click event
+        //return focus to the input element if a match was selected via a mouse click event
         element[0].focus();
       };
 
