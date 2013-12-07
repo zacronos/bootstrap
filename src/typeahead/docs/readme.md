@@ -43,7 +43,9 @@ The typeahead directives provide several attributes:
 
 * `typeahead-open-on-click` <i class="icon-eye-open"></i>
    _(Defaults: false)_ :
-   Should it open typeahead popup when use clicks in the element but doesn't start typing ?
+   Should it open typeahead popup when user clicks in the element but doesn't start typing ?  NOTE: filter will return
+   no matches when give an undefined search string, so to get all matches instead of no matches, the model must have a
+   value of '' instead of undefined.
 
 * `typeahead-template-url` <i class="icon-eye-open"></i>
    :
