@@ -41,10 +41,6 @@ The typeahead directives provide several attributes:
    _(Defaults: null)_ :
    A callback executed when a match is selected
 
-* `typeahead-open-on-click` <i class="icon-eye-open"></i>
-   _(Defaults: false)_ :
-   Should it open typeahead popup when use clicks in the element but doesn't start typing ?
-
 * `typeahead-template-url` <i class="icon-eye-open"></i>
    :
    Set custom item template

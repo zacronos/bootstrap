@@ -503,32 +503,6 @@ describe('typeahead tests', function () {
     });
   });
 
-  describe('openOnClick', function () {
-    it('should not open typeahead on click even when matches are available if openOnClick is not true', function () {
-
-      $scope.result = "b";
-
-      var element = prepareInputEl("<div><input ng-model='result' typeahead='item for item in source | filter:$viewValue'></div>");
-      var inputEl = findInput(element);
-
-      inputEl.click();
-      $scope.$digest();
-      expect(element).toBeClosed();
-    });
-
-    it('should open typeahead on click when matches are available if openOnClick is true', function () {
-
-      $scope.result = "b";
-
-      var element = prepareInputEl("<div><input ng-model='result' typeahead='item for item in source | filter:$viewValue' typeahead-open-on-click='true'></div>");
-      var inputEl = findInput(element);
-
-      inputEl.click();
-      $scope.$digest();
-      expect(element).toBeOpenWithActive(2, 0);
-    });
-  });
-
   describe('minLength set to 0', function () {
     it('should open typeahead if input is changed to empty string if defined threshold is 0', function () {
       var element = prepareInputEl("<div><input ng-model='result' typeahead='item for item in source | filter:$viewValue' typeahead-min-length='0'></div>");
@@ -536,18 +510,5 @@ describe('typeahead tests', function () {
 
       expect(element).toBeOpenWithActive(3, 0);
     });
-
-    it('should open typeahead on click even when input is empty if openOnClick is true and minlength is 0', function () {
-
-      $scope.result = "";
-
-      var element = prepareInputEl("<div><input ng-model='result' typeahead='item for item in source | filter:$viewValue' typeahead-min-length='0' typeahead-open-on-click='true'></div>");
-      var inputEl = findInput(element);
-
-      inputEl.click();
-      $scope.$digest();
-      expect(element).toBeOpenWithActive(3, 0);
-    });
   });
-
 });

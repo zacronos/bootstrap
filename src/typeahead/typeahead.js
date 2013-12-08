@@ -58,8 +58,6 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
       var inputFormatter = attrs.typeaheadInputFormatter ? $parse(attrs.typeaheadInputFormatter) : undefined;
 
-      var openOnClick = !!originalScope.$eval(attrs.typeaheadOpenOnClick);
-
       //INTERNAL VARIABLES
 
       //model setter executed upon match selection
@@ -147,7 +145,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
 
       //plug into $parsers pipeline to open a typeahead on view changes initiated from DOM
       //$parsers kick-in on all the changes coming from the view as well as manually triggered by $setViewValue
-      var initiateGetMatches = function (inputValue) {
+      modelCtrl.$parsers.unshift(function (inputValue) {
 
           hasFocus = true;
 
@@ -179,17 +177,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.position', 'ui.bootstrap
                   return undefined;
               }
           }
-      };
-      modelCtrl.$parsers.unshift(initiateGetMatches);
-
-      if (openOnClick === true) {
-        element.bind('click', function (evt) {
-          if (!hasFocus) {
-            initiateGetMatches(evt.target.value);
-            originalScope.$apply();
-          }
-        });
-      }
+      });
 
       modelCtrl.$formatters.push(function (modelValue) {
 
