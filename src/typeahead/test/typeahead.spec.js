@@ -594,4 +594,13 @@ describe('typeahead tests', function () {
     });
   });
 
+  describe('minLength set to 0', function () {
+    it('should open typeahead if input is changed to empty string if defined threshold is 0', function () {
+      var element = prepareInputEl('<div><input ng-model="result" typeahead="item for item in source | filter:$viewValue" typeahead-min-length="0"></div>');
+      changeInputValueTo(element, '');
+
+      expect(element).toBeOpenWithActive(3, 0);
+    });
+  });
+
 });
